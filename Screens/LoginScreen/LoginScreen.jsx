@@ -1,3 +1,4 @@
+import { useState } from "react";
 import {
   Dimensions,
   ImageBackground,
@@ -6,30 +7,57 @@ import {
   TextInput,
   View,
   TouchableOpacity,
-  Image,
+  TouchableWithoutFeedback,
+  Platform,
+  KeyboardAvoidingView,
+  Keyboard,
 } from "react-native";
-import background from "../../images/background.jpg";
+import background from "../../assets/images/background.jpg";
 
 export const LoginScreen = () => {
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+
+  const onLogin = () => {
+    console.log("Authorized user:", `${email}, ${password}`);
+    setEmail("");
+    setPassword("");
+  };
+
   return (
-    <>
+    <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
       <ImageBackground style={styles.image} source={background}>
         <View style={styles.container}>
-          <Text style={styles.title}>Увійти</Text>
-          <View style={styles.inputContainer}>
-            <TextInput
-              style={styles.input}
-              placeholder="Адреса електронної пошти"
-            ></TextInput>
-            <TextInput style={styles.input} placeholder="Пароль"></TextInput>
-          </View>
-          <TouchableOpacity style={styles.btn} activeOpacity={0.7}>
-            <Text style={{ color: "#FFFFFF" }}>Увійти</Text>
-          </TouchableOpacity>
-          <Text style={styles.text}>Немає акаунту? Зареєструватися</Text>
+          <KeyboardAvoidingView
+            behavior={Platform.OS == "ios" ? "padding" : "height"}
+          >
+            <Text style={styles.title}>Увійти</Text>
+            <View style={styles.inputContainer}>
+              <TextInput
+                value={email}
+                onChangeText={setEmail}
+                style={styles.input}
+                placeholder="Адреса електронної пошти"
+              ></TextInput>
+              <TextInput
+                value={password}
+                onChangeText={setPassword}
+                style={styles.input}
+                placeholder="Пароль"
+              ></TextInput>
+            </View>
+            <TouchableOpacity
+              style={styles.btn}
+              activeOpacity={0.7}
+              onPress={onLogin}
+            >
+              <Text style={{ color: "#FFFFFF" }}>Увійти</Text>
+            </TouchableOpacity>
+            <Text style={styles.text}>Немає акаунту? Зареєструватися</Text>
+          </KeyboardAvoidingView>
         </View>
       </ImageBackground>
-    </>
+    </TouchableWithoutFeedback>
   );
 };
 

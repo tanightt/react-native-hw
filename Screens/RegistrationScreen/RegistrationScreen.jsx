@@ -1,3 +1,4 @@
+import { useState } from "react";
 import {
   Dimensions,
   ImageBackground,
@@ -7,34 +8,71 @@ import {
   View,
   TouchableOpacity,
   Image,
+  TouchableWithoutFeedback,
+  KeyboardAvoidingView,
+  Keyboard,
 } from "react-native";
-import background from "../../images/background.jpg";
+import background from "../../assets/images/background.jpg";
+import SvgPlus from "../../assets/svg/SvgPlus";
 
 export const RegistrationScreen = () => {
+  const [name, setName] = useState("");
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+
+  const onRegistration = () => {
+    console.log("Registered user:", `${name}, ${email}, ${password}`);
+    setName("");
+    setEmail("");
+    setPassword("");
+  };
+
   return (
-    <>
+    <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
       <ImageBackground style={styles.image} source={background}>
         <View style={styles.container}>
-          <View style={styles.avatarWrapper}>
-            <Image style={{ width: 120, height: 120 }} />
-            <TouchableOpacity></TouchableOpacity>
-          </View>
-          <Text style={styles.title}>Реєстрація</Text>
-          <View style={styles.inputContainer}>
-            <TextInput style={styles.input} placeholder="Логін"></TextInput>
-            <TextInput
-              style={styles.input}
-              placeholder="Адреса електронної пошти"
-            ></TextInput>
-            <TextInput style={styles.input} placeholder="Пароль"></TextInput>
-          </View>
-          <TouchableOpacity style={styles.btn} activeOpacity={0.7}>
-            <Text style={{ color: "#FFFFFF" }}>Зареєстуватися</Text>
-          </TouchableOpacity>
-          <Text style={styles.text}>Вже є акаунт? Увійти</Text>
+          <KeyboardAvoidingView
+            behavior={Platform.OS == "ios" ? "padding" : "height"}
+          >
+            <View style={styles.avatarWrapper}>
+              <Image style={{ width: 120, height: 120 }} />
+              <TouchableOpacity style={styles.svgPlusIcon}>
+                <SvgPlus />
+              </TouchableOpacity>
+            </View>
+            <Text style={styles.title}>Реєстрація</Text>
+            <View style={styles.inputContainer}>
+              <TextInput
+                value={name}
+                onChangeText={setName}
+                style={styles.input}
+                placeholder="Логін"
+              ></TextInput>
+              <TextInput
+                value={email}
+                onChangeText={setEmail}
+                style={styles.input}
+                placeholder="Адреса електронної пошти"
+              ></TextInput>
+              <TextInput
+                value={password}
+                onChangeText={setPassword}
+                style={styles.input}
+                placeholder="Пароль"
+              ></TextInput>
+            </View>
+            <TouchableOpacity
+              style={styles.btn}
+              activeOpacity={0.7}
+              onPress={onRegistration}
+            >
+              <Text style={{ color: "#FFFFFF" }}>Зареєстуватися</Text>
+            </TouchableOpacity>
+            <Text style={styles.text}>Вже є акаунт? Увійти</Text>
+          </KeyboardAvoidingView>
         </View>
       </ImageBackground>
-    </>
+    </TouchableWithoutFeedback>
   );
 };
 
@@ -59,12 +97,17 @@ const styles = StyleSheet.create({
   },
   avatarWrapper: {
     position: "absolute",
-    top: -60,
+    top: -150,
     alignSelf: "center",
     width: 120,
     height: 120,
     backgroundColor: "#f6f6f6",
     borderRadius: 16,
+  },
+  svgPlusIcon: {
+    position: "absolute",
+    top: 80,
+    left: 105,
   },
   title: {
     marginBottom: 33,
