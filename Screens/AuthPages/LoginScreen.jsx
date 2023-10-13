@@ -12,16 +12,19 @@ import {
   KeyboardAvoidingView,
   Keyboard,
 } from "react-native";
+import { useNavigation } from "@react-navigation/native";
+
 import background from "../../assets/images/background.jpg";
 
 export const LoginScreen = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
 
+  const navigation = useNavigation();
+
   const onLogin = () => {
     console.log("Authorized user:", `${email}, ${password}`);
-    setEmail("");
-    setPassword("");
+    navigation.navigate("Home");
   };
 
   return (
@@ -47,13 +50,18 @@ export const LoginScreen = () => {
               ></TextInput>
             </View>
             <TouchableOpacity
-              style={styles.btn}
+              style={styles.submitBtn}
               activeOpacity={0.7}
               onPress={onLogin}
             >
               <Text style={{ color: "#FFFFFF" }}>Увійти</Text>
             </TouchableOpacity>
-            <Text style={styles.text}>Немає акаунту? Зареєструватися</Text>
+            <Text
+              style={styles.navBtn}
+              onPress={() => navigation.navigate("Registration")}
+            >
+              Немає акаунту? Зареєструватися
+            </Text>
           </KeyboardAvoidingView>
         </View>
       </ImageBackground>
@@ -82,11 +90,11 @@ const styles = StyleSheet.create({
   },
   title: {
     marginBottom: 33,
-    color: "#212121",
     textAlign: "center",
     fontSize: 30,
     fontWeight: "bold",
     letterSpacing: 0.3,
+    color: "#212121",
   },
   input: {
     width: 500,
@@ -94,8 +102,8 @@ const styles = StyleSheet.create({
     padding: 16,
     borderWidth: 1,
     borderRadius: 10,
-    backgroundColor: "#F6F6F6",
     borderColor: "#E8E8E8",
+    backgroundColor: "#F6F6F6",
   },
   inputContainer: {
     marginBottom: 43,
@@ -103,7 +111,7 @@ const styles = StyleSheet.create({
     flexDirection: "column",
     gap: 16,
   },
-  btn: {
+  submitBtn: {
     width: 500,
     height: 50,
     paddingHorizontal: 220,
@@ -112,10 +120,10 @@ const styles = StyleSheet.create({
     borderRadius: 100,
     backgroundColor: "#FF6C00",
   },
-  text: {
-    color: "#1B4371",
+  navBtn: {
     textAlign: "center",
     fontSize: 16,
     fontWeight: "400",
+    color: "#1B4371",
   },
 });

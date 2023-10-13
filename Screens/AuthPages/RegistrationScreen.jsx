@@ -12,6 +12,8 @@ import {
   KeyboardAvoidingView,
   Keyboard,
 } from "react-native";
+import { useNavigation } from "@react-navigation/native";
+
 import background from "../../assets/images/background.jpg";
 import SvgPlus from "../../assets/svg/SvgPlus";
 
@@ -20,11 +22,11 @@ export const RegistrationScreen = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
 
+  const navigation = useNavigation();
+
   const onRegistration = () => {
     console.log("Registered user:", `${name}, ${email}, ${password}`);
-    setName("");
-    setEmail("");
-    setPassword("");
+    navigation.navigate("Home");
   };
 
   return (
@@ -62,13 +64,18 @@ export const RegistrationScreen = () => {
               ></TextInput>
             </View>
             <TouchableOpacity
-              style={styles.btn}
+              style={styles.submitBtn}
               activeOpacity={0.7}
               onPress={onRegistration}
             >
               <Text style={{ color: "#FFFFFF" }}>Зареєстуватися</Text>
             </TouchableOpacity>
-            <Text style={styles.text}>Вже є акаунт? Увійти</Text>
+            <Text
+              style={styles.navBtn}
+              onPress={() => navigation.navigate("Login")}
+            >
+              Вже є акаунт? Увійти
+            </Text>
           </KeyboardAvoidingView>
         </View>
       </ImageBackground>
@@ -88,7 +95,7 @@ const styles = StyleSheet.create({
   container: {
     width: screenSize.width,
     paddingTop: 92,
-    paddingBottom: 45,
+    paddingBottom: 75,
     paddingHorizontal: 16,
     marginTop: 390,
     borderTopLeftRadius: 25,
@@ -98,11 +105,11 @@ const styles = StyleSheet.create({
   avatarWrapper: {
     position: "absolute",
     top: -150,
-    alignSelf: "center",
     width: 120,
     height: 120,
-    backgroundColor: "#f6f6f6",
+    alignSelf: "center",
     borderRadius: 16,
+    backgroundColor: "#f6f6f6",
   },
   svgPlusIcon: {
     position: "absolute",
@@ -111,11 +118,11 @@ const styles = StyleSheet.create({
   },
   title: {
     marginBottom: 33,
-    color: "#212121",
     textAlign: "center",
     fontSize: 30,
     fontWeight: "bold",
     letterSpacing: 0.3,
+    color: "#212121",
   },
   input: {
     width: 500,
@@ -123,8 +130,8 @@ const styles = StyleSheet.create({
     padding: 16,
     borderWidth: 1,
     borderRadius: 10,
-    backgroundColor: "#F6F6F6",
     borderColor: "#E8E8E8",
+    backgroundColor: "#F6F6F6",
   },
   inputContainer: {
     marginBottom: 43,
@@ -132,7 +139,7 @@ const styles = StyleSheet.create({
     flexDirection: "column",
     gap: 16,
   },
-  btn: {
+  submitBtn: {
     width: 500,
     height: 50,
     paddingHorizontal: 190,
@@ -141,10 +148,10 @@ const styles = StyleSheet.create({
     borderRadius: 100,
     backgroundColor: "#FF6C00",
   },
-  text: {
-    color: "#1B4371",
+  navBtn: {
     textAlign: "center",
     fontSize: 16,
     fontWeight: "400",
+    color: "#1B4371",
   },
 });
