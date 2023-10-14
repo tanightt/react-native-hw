@@ -41,13 +41,13 @@ export const LoginScreen = () => {
                 onChangeText={setEmail}
                 style={styles.input}
                 placeholder="Адреса електронної пошти"
-              ></TextInput>
+              />
               <TextInput
                 value={password}
                 onChangeText={setPassword}
                 style={styles.input}
                 placeholder="Пароль"
-              ></TextInput>
+              />
             </View>
             <TouchableOpacity
               style={styles.submitBtn}
@@ -91,6 +91,7 @@ const styles = StyleSheet.create({
   title: {
     marginBottom: 33,
     textAlign: "center",
+    fontFamily: "Roboto",
     fontSize: 30,
     fontWeight: "bold",
     letterSpacing: 0.3,
@@ -118,12 +119,16 @@ const styles = StyleSheet.create({
     paddingVertical: 16,
     marginBottom: 16,
     borderRadius: 100,
+    fontFamily: "Roboto",
+    fontSize: 16,
+    fontWeight: "regular",
     backgroundColor: "#FF6C00",
   },
   navBtn: {
     textAlign: "center",
+    fontFamily: "Roboto",
     fontSize: 16,
-    fontWeight: "400",
+    fontWeight: "regular",
     color: "#1B4371",
   },
 });
