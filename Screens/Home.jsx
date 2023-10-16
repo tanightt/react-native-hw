@@ -102,7 +102,6 @@ const styles = StyleSheet.create({
     backgroundColor: "#FF6C00",
     width: 80,
     height: 50,
-    marginBottom: 20,
     borderRadius: 40,
     justifyContent: "center",
     alignItems: "center",
@@ -119,9 +118,9 @@ const postsOptions = {
   },
   headerTitleStyle: {
     marginLeft: 210,
-    fontFamily: "Roboto",
+    fontFamily: "Roboto-Medium",
     fontSize: 17,
-    fontWeight: "bold",
+    fontWeight: "medium",
     lineHeight: 22,
     letterSpacing: -0.408,
     color: "#212121",
@@ -137,9 +136,9 @@ const createPostsOptions = {
   },
   headerTitleStyle: {
     marginLeft: 120,
-    fontFamily: "Roboto",
+    fontFamily: "Roboto-Medium",
     fontSize: 17,
-    fontWeight: "bold",
+    fontWeight: "medium",
     lineHeight: 22,
   },
 };

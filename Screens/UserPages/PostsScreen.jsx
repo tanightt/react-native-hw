@@ -33,13 +33,13 @@ const styles = StyleSheet.create({
   userAvatar: { width: 70, height: 70 },
   userName: {
     color: "#212121",
-    fontFamily: "Roboto",
+    fontFamily: "Roboto-Bold",
     fontSize: 15,
     fontWeight: "bold",
   },
   userEmail: {
     color: "rgba(33, 33, 33, 0.8)",
-    fontFamily: "Roboto",
+    fontFamily: "Roboto-Regular",
     fontSize: 13,
     fontWeight: "regular",
   },
