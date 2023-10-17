@@ -16,6 +16,7 @@ const Tabs = createBottomTabNavigator();
 export const Home = () => {
   return (
     <Tabs.Navigator
+      id="home"
       initialRouteName="Posts"
       screenOptions={{
         tabBarStyle: { height: 83 },
@@ -69,7 +70,6 @@ export const Home = () => {
         name="Profile"
         component={ProfileScreen}
         options={({ navigation }) => ({
-          ...createPostsOptions,
           headerLeft: () => (
             <SvgArrow
               onPress={() => navigation.navigate("Posts")}
@@ -129,6 +129,7 @@ const postsOptions = {
 
 const createPostsOptions = {
   title: "Створити публікацію",
+  tabBarStyle: { display: "none" },
   headerStyle: {
     borderBottomWidth: 0.5,
     borderBottomColor: "rgba(0, 0, 0, 0.3)",

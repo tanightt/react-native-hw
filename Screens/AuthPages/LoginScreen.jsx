@@ -23,6 +23,9 @@ export const LoginScreen = () => {
   const navigation = useNavigation();
 
   const onLogin = () => {
+    if (!email.trim() && !password.trim()) {
+      return console.warn("Будь ласка, введіть дані");
+    }
     console.log("Authorized user:", `${email}, ${password}`);
     navigation.navigate("Home");
   };

@@ -25,6 +25,9 @@ export const RegistrationScreen = () => {
   const navigation = useNavigation();
 
   const onRegistration = () => {
+    if (!name.trim() && !email.trim() && !password.trim()) {
+      return console.warn("Будь ласка, введіть дані");
+    }
     console.log("Registered user:", `${name}, ${email}, ${password}`);
     navigation.navigate("Home");
   };
