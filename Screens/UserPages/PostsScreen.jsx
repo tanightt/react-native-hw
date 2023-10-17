@@ -1,46 +1,68 @@
-import { Dimensions, Image, StyleSheet, Text, View } from "react-native";
+import { createStackNavigator } from "@react-navigation/stack";
 
-import avatar from "../../assets/images/avatar.png";
+import { DefaultPostsScreen } from "./DefaultPostsScreen";
+import { CommentsScreen } from "./CommentsScreen";
+import { MapScreen } from "./MapScreen";
 
-export const PostsScreen = () => {
+import SvgArrow from "../../assets/svg/SvgArrow";
+import { StyleSheet } from "react-native";
+
+export const PostsScreen = ({ navigation }) => {
+  const PostStack = createStackNavigator();
+
   return (
-    <View style={styles.postsContainer}>
-      <View style={styles.userContainer}>
-        <Image source={avatar} style={styles.userAvatar} />
-        <View style={{ flexDirection: "column" }}>
-          <Text style={styles.userName}>Natali Romanova</Text>
-          <Text style={styles.userEmail}>email@example.com</Text>
-        </View>
-      </View>
-    </View>
+    <PostStack.Navigator
+      initialRouteName="Default"
+      screenOptions={{ headerShown: false }}
+    >
+      <PostStack.Screen name="Default" component={DefaultPostsScreen} />
+      <PostStack.Screen
+        name="Comments"
+        component={CommentsScreen}
+        options={{
+          ...screenOptions,
+          title: "Коментарі",
+          headerLeft: () => (
+            <SvgArrow
+              onPress={() => navigation.navigate("Default")}
+              title="Return back"
+              color="#fff"
+              style={styles.iconArrow}
+            />
+          ),
+        }}
+      />
+      <PostStack.Screen
+        name="Map"
+        component={MapScreen}
+        options={{
+          ...screenOptions,
+          title: "Карта",
+          headerLeft: () => (
+            <SvgArrow
+              onPress={() => navigation.navigate("Default")}
+              title="Return back"
+              color="#fff"
+              style={styles.iconArrow}
+            />
+          ),
+        }}
+      />
+    </PostStack.Navigator>
   );
 };
 
-const screenSize = Dimensions.get("screen");
-
 const styles = StyleSheet.create({
-  postsContainer: {
-    height: screenSize.height,
-    paddingHorizontal: 16,
-    paddingTop: 32,
-    backgroundColor: "#fff",
-  },
-  userContainer: {
-    flexDirection: "row",
-    gap: 8,
-    alignItems: "center",
-  },
-  userAvatar: { width: 70, height: 70 },
-  userName: {
-    color: "#212121",
-    fontFamily: "Roboto-Bold",
-    fontSize: 15,
-    fontWeight: "bold",
-  },
-  userEmail: {
-    color: "rgba(33, 33, 33, 0.8)",
-    fontFamily: "Roboto-Regular",
-    fontSize: 13,
-    fontWeight: "regular",
-  },
+  iconArrow: { marginLeft: 16, width: 24, height: 24 },
 });
+
+const screenOptions = {
+  headerShown: true,
+  headerTitleStyle: {
+    fontFamily: "Roboto-Bold",
+    fontSize: 17,
+    fontWeight: "bold",
+    lineHeight: 22,
+    textAlign: "center",
+  },
+};

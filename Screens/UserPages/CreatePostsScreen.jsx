@@ -1,7 +1,13 @@
-import { useState } from "react";
+import React, { useState, useEffect } from "react";
+import { useNavigation } from "@react-navigation/native";
+import { Camera } from "expo-camera";
+import * as Location from "expo-location";
+import * as MediaLibrary from "expo-media-library";
 import {
   Dimensions,
+  Image,
   Keyboard,
+  KeyboardAvoidingView,
   StyleSheet,
   Text,
   TextInput,
@@ -12,48 +18,139 @@ import {
 
 import SvgCamera from "../../assets/svg/SvgCamera";
 import SvgLocation from "../../assets/svg/SvgLocation";
+import SvgTrash from "../../assets/svg/SvgTrash";
 
 export const CreatePostsScreen = () => {
   const [name, setName] = useState("");
-  const [location, setLocation] = useState("");
+  const [photo, setPhoto] = useState("");
+  const [location, setLocation] = useState(null);
+  const [address, setAddress] = useState("");
+  const [cameraRef, setCameraRef] = useState(null);
 
-  const onCreate = () => {
-    console.log("Created post:", `${name}, ${location}`);
+  const navigation = useNavigation();
+
+  useEffect(() => {
+    (async () => {
+      await Camera.requestCameraPermissionsAsync();
+      await MediaLibrary.requestPermissionsAsync();
+    })();
+
+    (async () => {
+      await Location.requestForegroundPermissionsAsync();
+
+      let location = await Location.getCurrentPositionAsync({});
+      const coords = {
+        latitude: location.coords.latitude,
+        longitude: location.coords.longitude,
+      };
+      const [address] = await Location.reverseGeocodeAsync(coords);
+      setLocation(coords);
+      const fullAddress = ` ${address.region}, ${address.country}`;
+      setAddress(fullAddress);
+    })();
+  }, []);
+
+  const onCreatePhoto = async () => {
+    if (cameraRef) {
+      const { uri } = await cameraRef.takePictureAsync();
+      await MediaLibrary.createAssetAsync(uri);
+      setPhoto(uri);
+    }
+  };
+
+  const onClearForm = () => {
+    setPhoto("");
+    setName("");
+    setAddress("");
+    setLocation(null);
+  };
+
+  const onSubmitPost = () => {
+    navigation.navigate("Default", {
+      photo,
+      name: name.trim(),
+      address,
+      location,
+    });
+    onClearForm();
   };
 
   return (
     <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
       <View style={styles.postsContainer}>
-        <TouchableOpacity style={styles.photoContainer}>
-          <View style={styles.cameraContainer}>
-            <SvgCamera fillColor={"#bdbdbd"} />
-          </View>
-        </TouchableOpacity>
-        <Text style={styles.textPhoto}>Завантажте фото</Text>
-        <TextInput
-          value={name}
-          onChangeText={setName}
-          style={styles.input}
-          placeholder="Назва..."
-        />
-        <TextInput
-          value={location}
-          onChangeText={setLocation}
-          style={styles.input}
-          placeholder="      Місцевість..."
-        />
-
-        <View style={styles.locationIcon}>
+        {photo ? (
+          <Image source={{ uri: photo }} style={{ height: 240 }} />
+        ) : (
+          <Camera
+            style={styles.camera}
+            type={Camera.Constants.Type.back}
+            ref={setCameraRef}
+          ></Camera>
+        )}
+        <View style={styles.photoView}>
+          <TouchableOpacity onPress={onCreatePhoto}>
+            <View
+              style={StyleSheet.compose(
+                styles.cameraContainer,
+                !photo
+                  ? { backgroundColor: "#ffffff" }
+                  : { backgroundColor: "rgba(255, 255, 255, 0.30)" }
+              )}
+            >
+              <SvgCamera fillColor={"#bdbdbd"} />
+            </View>
+          </TouchableOpacity>
+        </View>
+        {photo ? (
+          <Text style={styles.textPhoto}>Редагувати фото</Text>
+        ) : (
+          <Text style={styles.textPhoto}>Завантажте фото</Text>
+        )}
+        <KeyboardAvoidingView
+          behavior={Platform.OS == "ios" ? "padding" : "height"}
+        >
+          <TextInput
+            value={name}
+            onChangeText={setName}
+            style={StyleSheet.compose(styles.input, styles.inputName)}
+            placeholder="Назва..."
+          />
+        </KeyboardAvoidingView>
+        <View style={StyleSheet.compose(styles.input, styles.inputLocation)}>
+          <KeyboardAvoidingView
+            behavior={Platform.OS == "ios" ? "padding" : "height"}
+          >
+            <TextInput
+              value={address}
+              onChangeText={setAddress}
+              placeholder="Місцевість..."
+            />
+          </KeyboardAvoidingView>
           <SvgLocation />
         </View>
 
         <TouchableOpacity
-          style={styles.submitBtn}
+          style={StyleSheet.compose(
+            styles.submitBtn,
+            photo
+              ? { backgroundColor: "#FF6C00" }
+              : { backgroundColor: "#F6F6F6" }
+          )}
           activeOpacity={0.7}
-          onPress={onCreate}
+          onPress={onSubmitPost}
         >
-          <Text style={{ color: "#BDBDBD" }}>Опубліковати</Text>
+          <Text style={!photo ? { color: "#BDBDBD" } : { color: "#ffffff" }}>
+            Опубліковати
+          </Text>
         </TouchableOpacity>
+        <View style={styles.trashIcon}>
+          <SvgTrash
+            onPress={() => {
+              navigation.navigate("Posts"), onClearForm();
+            }}
+            title="Posts"
+          />
+        </View>
       </View>
     </TouchableWithoutFeedback>
   );
@@ -68,29 +165,33 @@ const styles = StyleSheet.create({
     paddingTop: 32,
     backgroundColor: "#fff",
   },
-  photoContainer: {
+  camera: {
     height: 240,
-    Width: 342,
     marginBottom: 8,
-    border: " 1px solid #E8E8E8",
     borderRadius: 8,
     alignItems: "center",
     justifyContent: "center",
-    backgroundColor: "#F6F6F6",
+  },
+  photoView: {
+    position: "absolute",
+    top: 120,
+    left: 240,
+    backgroundColor: "transparent",
+    justifyContent: "flex-end",
   },
   cameraContainer: {
-    width: 60,
-    height: 60,
+    flex: 1,
+    maxWidth: 60,
+    maxHeight: 60,
     padding: 18,
     borderRadius: 50,
+    justifyContent: "center",
     alignItems: "center",
-    alignContent: "center",
     color: "#bdbdbd",
-    backgroundColor: "#ffffff",
   },
   textPhoto: {
     marginBottom: 32,
-    fontFamily: "Roboto",
+    fontFamily: "Roboto-Regular",
     fontSize: 16,
     fontWeight: "regular",
     color: "#BDBDBD",
@@ -105,25 +206,41 @@ const styles = StyleSheet.create({
     color: "#212121",
     backgroundColor: "#ffffff",
   },
-  locationIcon: {
-    position: "absolute",
-    top: 410,
-    left: 16,
-    width: 24,
-    height: 24,
+  inputName: {
+    fontFamily: "Roboto-Medium",
+    fontWeight: "medium",
+  },
+  inputLocation: {
+    flexDirection: "row-reverse",
+    alignItems: "center",
+    justifyContent: "flex-end",
+    gap: 4,
+    fontFamily: "Roboto-Regular",
+    fontWeight: "regular",
   },
   submitBtn: {
-    width: 500,
     height: 50,
-    paddingHorizontal: 190,
+    paddingHorizontal: 140,
     paddingVertical: 16,
     marginTop: 32,
+    marginBottom: 160,
     borderRadius: 100,
+    alignItems: "center",
 
-    fontFamily: "Roboto",
+    fontFamily: "Roboto-Regular",
     fontSize: 16,
     fontWeight: "regular",
-    // backgroundColor: "#FF6C00",
+  },
+  trashIcon: {
+    height: 50,
+    width: 70,
+    paddingHorizontal: 23,
+    paddingVertical: 16,
+    marginTop: 32,
+    marginLeft: 220,
+    borderRadius: 100,
+    alignItems: "center",
+    justifyContent: "center",
     backgroundColor: "#F6F6F6",
   },
 });
