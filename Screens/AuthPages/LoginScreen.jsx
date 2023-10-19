@@ -13,6 +13,8 @@ import {
   Keyboard,
 } from "react-native";
 import { useNavigation } from "@react-navigation/native";
+import { useDispatch } from "react-redux";
+import { loginThunk } from "../../redux/auth/authOperations";
 
 import background from "../../assets/images/background.jpg";
 
@@ -21,13 +23,21 @@ export const LoginScreen = () => {
   const [password, setPassword] = useState("");
 
   const navigation = useNavigation();
+  const dispatch = useDispatch();
 
   const onLogin = () => {
     if (!email.trim() && !password.trim()) {
       return console.warn("Будь ласка, введіть дані");
     }
-    console.log("Authorized user:", `${email}, ${password}`);
-    navigation.navigate("Home");
+
+    const data = { email, password };
+    dispatch(loginThunk(data))
+      .unwrap()
+      .then(() => {
+        setEmail("");
+        setPassword("");
+        navigation.navigate("Home");
+      });
   };
 
   return (

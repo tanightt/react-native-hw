@@ -1,5 +1,7 @@
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import { StyleSheet, View } from "react-native";
+import { useNavigation } from "@react-navigation/native";
+import { useDispatch } from "react-redux";
 
 import { PostsScreen } from "./UserPages/PostsScreen";
 import { CreatePostsScreen } from "./UserPages/CreatePostsScreen";
@@ -10,10 +12,22 @@ import SvgGrid from "../assets/svg/SvgGrid";
 import SvgArrow from "../assets/svg/SvgArrow";
 import SvgPlusCreate from "../assets/svg/SvgPlusCreate";
 import SvgUser from "../assets/svg/SvgUser";
+import { logoutThunk } from "../redux/auth/authOperations";
 
 const Tabs = createBottomTabNavigator();
 
 export const Home = () => {
+  const navigation = useNavigation();
+  const dispatch = useDispatch();
+
+  const onLogout = () => {
+    dispatch(logoutThunk())
+      .unwrap()
+      .then(() => {
+        navigation.navigate("Login");
+      });
+  };
+
   return (
     <Tabs.Navigator
       id="home"
@@ -25,11 +39,11 @@ export const Home = () => {
       <Tabs.Screen
         name="Posts"
         component={PostsScreen}
-        options={({ navigation }) => ({
+        options={() => ({
           ...postsOptions,
           headerRight: () => (
             <SvgLogOut
-              onPress={() => navigation.navigate("Login")}
+              onPress={onLogout}
               title="Logout"
               style={styles.iconLogout}
             />

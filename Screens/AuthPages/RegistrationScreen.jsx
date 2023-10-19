@@ -13,23 +13,58 @@ import {
   Keyboard,
 } from "react-native";
 import { useNavigation } from "@react-navigation/native";
-
+import { useDispatch } from "react-redux";
+import * as ImagePicker from "expo-image-picker";
+import { uploadImage } from "../../utils/uploadImage";
+import { registerThunk } from "../../redux/auth/authOperations";
 import background from "../../assets/images/background.jpg";
-import SvgPlus from "../../assets/svg/SvgPlus";
+import SvgPlusAvatar from "../../assets/svg/SvgPlusAvatar";
 
 export const RegistrationScreen = () => {
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [avatar, setAvatar] = useState(null);
 
   const navigation = useNavigation();
+  const dispatch = useDispatch();
 
-  const onRegistration = () => {
+  const onLoadAvatar = async () => {
+    const result = await ImagePicker.launchImageLibraryAsync({
+      mediaTypes: ImagePicker.MediaTypeOptions.All,
+      allowsEditing: true,
+      aspect: [4, 4],
+      quality: 1,
+    });
+
+    if (!result.canceled) {
+      setAvatar(result.assets[0].uri);
+    }
+  };
+
+  const onRegistration = async () => {
+    const photo = avatar
+      ? await uploadImage({ imageUri: avatar, folder: "avatars" })
+      : "https://www.svgrepo.com/show/530412/user.svg";
+
     if (!name.trim() && !email.trim() && !password.trim()) {
       return console.warn("Будь ласка, введіть дані");
     }
-    console.log("Registered user:", `${name}, ${email}, ${password}`);
-    navigation.navigate("Home");
+
+    const data = { name, email, password, photo };
+    dispatch(registerThunk(data))
+      .unwrap()
+      .then(() => {
+        setName("");
+        setEmail("");
+        setPassword("");
+        navigation.navigate("Home");
+      });
+
+    if (data === undefined || !data.uid) {
+      alert(`Реєстрацію не виконано!`);
+      return;
+    }
   };
 
   return (
@@ -40,9 +75,15 @@ export const RegistrationScreen = () => {
             behavior={Platform.OS == "ios" ? "padding" : "height"}
           >
             <View style={styles.avatarWrapper}>
-              <Image style={{ width: 120, height: 120 }} />
-              <TouchableOpacity style={styles.svgPlusIcon}>
-                <SvgPlus />
+              <Image
+                style={{ width: 120, height: 120, borderRadius: 16 }}
+                source={{ uri: avatar }}
+              />
+              <TouchableOpacity
+                style={styles.svgPlusIcon}
+                onPress={onLoadAvatar}
+              >
+                <SvgPlusAvatar />
               </TouchableOpacity>
             </View>
             <Text style={styles.title}>Реєстрація</Text>
