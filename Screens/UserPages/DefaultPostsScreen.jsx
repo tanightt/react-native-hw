@@ -1,9 +1,9 @@
 import { useRoute } from "@react-navigation/native";
 import React, { useEffect, useState } from "react";
 import { Dimensions, FlatList, StyleSheet, View } from "react-native";
-import { PostItem } from "../components/PostItem";
+import { PostItem } from "../../components/PostItem";
 
-import { UserInf } from "../components/UserInf";
+import { UserInf } from "../../components/UserInf";
 
 export const DefaultPostsScreen = () => {
   const [posts, setPosts] = useState([]);

@@ -6,7 +6,7 @@ import { useRoute } from "@react-navigation/native";
 export const MapScreen = () => {
   const [location, setLocation] = useState(null);
   const route = useRoute();
-  console.log(location);
+  // console.log(location);
   useEffect(() => {
     if (route.params) {
       setLocation(route.params.location);

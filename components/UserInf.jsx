@@ -1,5 +1,5 @@
 import { Image, StyleSheet, Text, View } from "react-native";
-import avatar from "../../assets/images/avatar.png";
+import avatar from "../assets/images/avatar.png";
 
 export const UserInf = () => {
   return (

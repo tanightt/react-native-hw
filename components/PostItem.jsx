@@ -2,8 +2,8 @@ import React from "react";
 import { Image, StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import { useNavigation } from "@react-navigation/native";
 
-import SvgComment from "../../assets/svg/SvgComment";
-import SvgLocation from "../../assets/svg/SvgLocation";
+import SvgComment from "../assets/svg/SvgComment";
+import SvgLocation from "../assets/svg/SvgLocation";
 
 export const PostItem = ({ photo, name, address, location }) => {
   const navigation = useNavigation();
