@@ -45,9 +45,9 @@ export const RegistrationScreen = () => {
   const onRegistration = async () => {
     const photo = avatar
       ? await uploadImage({ imageUri: avatar, folder: "avatars" })
-      : "https://www.svgrepo.com/show/530412/user.svg";
+      : "https://static.vecteezy.com/system/resources/thumbnails/022/876/359/small/social-media-user-3d-cartoon-illustration-speech-bubble-with-internet-icon-png.png";
 
-    if (!name.trim() && !email.trim() && !password.trim()) {
+    if (!name.trim() || !email.trim() || !password.trim()) {
       return console.warn("Будь ласка, введіть дані");
     }
 
@@ -59,12 +59,8 @@ export const RegistrationScreen = () => {
         setEmail("");
         setPassword("");
         navigation.navigate("Home");
-      });
-
-    if (data === undefined || !data.uid) {
-      alert(`Реєстрацію не виконано!`);
-      return;
-    }
+      })
+      .catch((error) => alert("Реєстрацію не виконано!", error));
   };
 
   return (

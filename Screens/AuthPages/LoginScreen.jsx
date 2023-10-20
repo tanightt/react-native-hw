@@ -26,7 +26,7 @@ export const LoginScreen = () => {
   const dispatch = useDispatch();
 
   const onLogin = () => {
-    if (!email.trim() && !password.trim()) {
+    if (!email.trim() || !password.trim()) {
       return console.warn("Будь ласка, введіть дані");
     }
 
@@ -37,12 +37,13 @@ export const LoginScreen = () => {
         setEmail("");
         setPassword("");
         navigation.navigate("Home");
-      });
+      })
+      .catch((error) => alert("Авторизацію не виконано!", error));
   };
 
   return (
     <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
-      <ImageBackground style={styles.image} source={background}>
+      <ImageBackground style={styles.imageBg} source={background}>
         <View style={styles.container}>
           <KeyboardAvoidingView
             behavior={Platform.OS == "ios" ? "padding" : "height"}
@@ -85,7 +86,7 @@ export const LoginScreen = () => {
 const screenSize = Dimensions.get("screen");
 
 const styles = StyleSheet.create({
-  image: {
+  imageBg: {
     flex: 1,
     height: screenSize.height,
     width: screenSize.width,

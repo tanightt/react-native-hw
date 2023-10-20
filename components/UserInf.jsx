@@ -1,13 +1,16 @@
 import { Image, StyleSheet, Text, View } from "react-native";
-import avatar from "../assets/images/avatar.png";
+import { useSelector } from "react-redux";
+import { selectUser } from "../redux/selectors";
 
 export const UserInf = () => {
+  const user = useSelector(selectUser);
+
   return (
     <View style={styles.userContainer}>
-      <Image source={avatar} style={styles.userAvatar} />
+      <Image source={{ uri: user.avatar }} style={styles.userAvatar} />
       <View style={{ flexDirection: "column" }}>
-        <Text style={styles.userName}>Natali Romanova</Text>
-        <Text style={styles.userEmail}>email@example.com</Text>
+        <Text style={styles.userName}>{user.name}</Text>
+        <Text style={styles.userEmail}>{user.email}</Text>
       </View>
     </View>
   );
@@ -20,7 +23,7 @@ const styles = StyleSheet.create({
     gap: 8,
     alignItems: "center",
   },
-  userAvatar: { width: 70, height: 70 },
+  userAvatar: { width: 70, height: 70, borderRadius: 16 },
   userName: {
     color: "#212121",
     fontFamily: "Roboto-Bold",
