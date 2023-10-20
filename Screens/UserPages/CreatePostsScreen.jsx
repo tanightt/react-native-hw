@@ -15,6 +15,11 @@ import {
   TouchableWithoutFeedback,
   View,
 } from "react-native";
+import { useSelector } from "react-redux";
+import { selectUser } from "../../redux/selectors";
+import { db } from "../../firebase/config";
+import { addDoc, collection } from "firebase/firestore";
+import { uploadImage } from "../../utils/uploadImage";
 
 import SvgCamera from "../../assets/svg/SvgCamera";
 import SvgLocation from "../../assets/svg/SvgLocation";
@@ -27,6 +32,7 @@ export const CreatePostsScreen = () => {
   const [address, setAddress] = useState("");
   const [cameraRef, setCameraRef] = useState(null);
 
+  const user = useSelector(selectUser);
   const navigation = useNavigation();
 
   useEffect(() => {
@@ -65,13 +71,23 @@ export const CreatePostsScreen = () => {
     setLocation(null);
   };
 
-  const onSubmitPost = () => {
-    navigation.navigate("Default", {
-      photo,
-      name: name.trim(),
-      address,
-      location,
+  const onSubmitPost = async () => {
+    const photoUrl = await uploadImage({
+      imageUri: photo,
+      folder: "postPhoto",
     });
+
+    const data = {
+      photoUrl,
+      name,
+      location,
+      address,
+      userId: user.id,
+      date: Date.now(),
+    };
+
+    await addDoc(collection(db, "posts"), data);
+    navigation.navigate("Default");
     onClearForm();
   };
 
