@@ -1,22 +1,18 @@
 import { useState } from "react";
 import {
   Dimensions,
-  ImageBackground,
   StyleSheet,
   Text,
   TextInput,
   View,
   TouchableOpacity,
-  TouchableWithoutFeedback,
   Platform,
   KeyboardAvoidingView,
-  Keyboard,
 } from "react-native";
 import { useNavigation } from "@react-navigation/native";
 import { useDispatch } from "react-redux";
 import { loginThunk } from "../../redux/auth/authOperations";
-
-import background from "../../assets/images/background.jpg";
+import { Background } from "../../components/Background";
 
 export const LoginScreen = () => {
   const [email, setEmail] = useState("");
@@ -42,56 +38,48 @@ export const LoginScreen = () => {
   };
 
   return (
-    <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
-      <ImageBackground style={styles.imageBg} source={background}>
-        <View style={styles.container}>
-          <KeyboardAvoidingView
-            behavior={Platform.OS == "ios" ? "padding" : "height"}
+    <Background>
+      <View style={styles.container}>
+        <KeyboardAvoidingView
+          behavior={Platform.OS == "ios" ? "padding" : "height"}
+        >
+          <Text style={styles.title}>Увійти</Text>
+          <View style={styles.inputContainer}>
+            <TextInput
+              value={email}
+              onChangeText={setEmail}
+              style={styles.input}
+              placeholder="Адреса електронної пошти"
+            />
+            <TextInput
+              value={password}
+              onChangeText={setPassword}
+              style={styles.input}
+              placeholder="Пароль"
+            />
+          </View>
+          <TouchableOpacity
+            style={styles.submitBtn}
+            activeOpacity={0.7}
+            onPress={onLogin}
           >
-            <Text style={styles.title}>Увійти</Text>
-            <View style={styles.inputContainer}>
-              <TextInput
-                value={email}
-                onChangeText={setEmail}
-                style={styles.input}
-                placeholder="Адреса електронної пошти"
-              />
-              <TextInput
-                value={password}
-                onChangeText={setPassword}
-                style={styles.input}
-                placeholder="Пароль"
-              />
-            </View>
-            <TouchableOpacity
-              style={styles.submitBtn}
-              activeOpacity={0.7}
-              onPress={onLogin}
-            >
-              <Text style={{ color: "#FFFFFF" }}>Увійти</Text>
-            </TouchableOpacity>
-            <Text
-              style={styles.navBtn}
-              onPress={() => navigation.navigate("Registration")}
-            >
-              Немає акаунту? Зареєструватися
-            </Text>
-          </KeyboardAvoidingView>
-        </View>
-      </ImageBackground>
-    </TouchableWithoutFeedback>
+            <Text style={{ color: "#FFFFFF" }}>Увійти</Text>
+          </TouchableOpacity>
+          <Text
+            style={styles.navBtn}
+            onPress={() => navigation.navigate("Registration")}
+          >
+            Немає акаунту? Зареєструватися
+          </Text>
+        </KeyboardAvoidingView>
+      </View>
+    </Background>
   );
 };
 
 const screenSize = Dimensions.get("screen");
 
 const styles = StyleSheet.create({
-  imageBg: {
-    flex: 1,
-    height: screenSize.height,
-    width: screenSize.width,
-    justifyContent: "center",
-  },
   container: {
     width: screenSize.width,
     paddingTop: 32,

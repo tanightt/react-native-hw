@@ -1,23 +1,14 @@
-import React, { useEffect, useState } from "react";
+import React from "react";
 import { Dimensions, FlatList, StyleSheet, View } from "react-native";
-import { collection, onSnapshot } from "firebase/firestore";
-import { db } from "../../firebase/config";
+import { useSelector } from "react-redux";
 import { PostItem } from "../../components/PostItem";
 import { UserInf } from "../../components/UserInf";
+import { useGetPosts } from "../../hooks/useGetPosts";
+import { selectUser } from "../../redux/selectors";
 
 export const DefaultPostsScreen = () => {
-  const [posts, setPosts] = useState([]);
-
-  useEffect(() => {
-    (async () => {
-      onSnapshot(collection(db, "posts"), (doc) => {
-        const postsList = doc.docs
-          .map((post) => ({ ...post.data(), id: post.id }))
-          .sort((a, b) => b.date - a.date);
-        setPosts(postsList);
-      });
-    })();
-  }, []);
+  const user = useSelector(selectUser);
+  const [posts] = useGetPosts(user.id);
 
   return (
     <View style={styles.postsContainer}>

@@ -4,9 +4,12 @@ import { useNavigation } from "@react-navigation/native";
 
 import SvgComment from "../assets/svg/SvgComment";
 import SvgLocation from "../assets/svg/SvgLocation";
+import { useGetComments } from "../hooks/useGetComments";
 
 export const PostItem = ({ id, photo, name, address, location }) => {
   const navigation = useNavigation();
+  const [commentsList] = useGetComments(id);
+  const commentsAmount = commentsList.length;
 
   return (
     <View style={styles.itemPostContainer}>
@@ -17,8 +20,13 @@ export const PostItem = ({ id, photo, name, address, location }) => {
           style={{ flexDirection: "row", gap: 8 }}
           onPress={() => navigation.navigate("Comments", { id, photo })}
         >
-          <SvgComment />
-          <Text>0</Text>
+          <SvgComment
+            style={{
+              fill: commentsAmount ? "#FF6C00" : "none",
+              stroke: commentsAmount ? "#FF6C00" : "#BDBDBD",
+            }}
+          />
+          <Text>{commentsAmount}</Text>
         </TouchableOpacity>
         <TouchableOpacity
           style={{ flexDirection: "row" }}

@@ -1,7 +1,6 @@
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import {
-  ImageBackground,
   Text,
   StyleSheet,
   Dimensions,
@@ -11,35 +10,25 @@ import {
   TouchableOpacity,
 } from "react-native";
 import * as ImagePicker from "expo-image-picker";
-import { collection, onSnapshot } from "firebase/firestore";
-import { db } from "../../firebase/config";
 import { selectUser } from "../../redux/selectors";
 import { uploadImage } from "../../utils/uploadImage";
 import { auth } from "../../firebase/config";
 import { updateProfile } from "firebase/auth";
 import { updateAvatar } from "../../redux/auth/authSlice";
 import { PostItem } from "../../components/PostItem";
+import { logoutThunk } from "../../redux/auth/authOperations";
+import { useGetPosts } from "../../hooks/useGetPosts";
 
-import background from "../../assets/images/background.jpg";
 import SvgPlusAvatar from "../../assets/svg/SvgPlusAvatar";
 import SvgLogOut from "../../assets/svg/SvgLogout";
+import { Background } from "../../components/Background";
 
 export const ProfileScreen = () => {
   const [avatar, setAvatar] = useState(null);
-  const [posts, setPosts] = useState([]);
   const user = useSelector(selectUser);
   const dispatch = useDispatch();
 
-  useEffect(() => {
-    (async () => {
-      onSnapshot(collection(db, "posts"), (doc) => {
-        const postsList = doc.docs
-          .map((post) => ({ ...post.data(), id: post.id }))
-          .sort((a, b) => b.date - a.date);
-        setPosts(postsList);
-      });
-    })();
-  }, []);
+  const [posts] = useGetPosts(user.id);
 
   const onLoadAvatar = async () => {
     const result = await ImagePicker.launchImageLibraryAsync({
@@ -54,14 +43,14 @@ export const ProfileScreen = () => {
       setAvatar(selectedAvatar);
 
       const photo = await uploadImage({
-        imageUri: avatar,
+        imageUri: selectedAvatar,
         folder: "avatars",
       });
 
       dispatch(updateAvatar({ photo }));
 
       const currentUser = auth.currentUser;
-
+      console.log("currentUser", currentUser);
       await updateProfile(currentUser, {
         photoURL: photo,
       });
@@ -74,10 +63,13 @@ export const ProfileScreen = () => {
 
   return (
     <>
-      <ImageBackground style={styles.imageBg} source={background}>
+      <Background>
         <View style={styles.container}>
           <View style={styles.avatarWrapper}>
-            <Image style={styles.userAvatar} source={{ uri: user.avatar }} />
+            <Image
+              style={styles.userAvatar}
+              source={{ uri: avatar ? avatar : user.avatar }}
+            />
             <TouchableOpacity style={styles.svgPlusIcon} onPress={onLoadAvatar}>
               <SvgPlusAvatar />
             </TouchableOpacity>
@@ -93,6 +85,7 @@ export const ProfileScreen = () => {
             keyExtractor={(item) => item.id}
             renderItem={({ item }) => (
               <PostItem
+                id={item.id}
                 name={item.name}
                 photo={item.photoUrl}
                 address={item.address}
@@ -101,7 +94,7 @@ export const ProfileScreen = () => {
             )}
           />
         </View>
-      </ImageBackground>
+      </Background>
     </>
   );
 };
@@ -109,12 +102,6 @@ export const ProfileScreen = () => {
 const screenSize = Dimensions.get("screen");
 
 const styles = StyleSheet.create({
-  imageBg: {
-    flex: 1,
-    height: screenSize.height,
-    width: screenSize.width,
-    justifyContent: "center",
-  },
   container: {
     width: screenSize.width,
     height: 700,
