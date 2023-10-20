@@ -4,6 +4,8 @@ import {
   useRoute,
 } from "@react-navigation/native";
 import { useEffect, useState } from "react";
+import { addDoc, collection, doc, onSnapshot } from "firebase/firestore";
+import { db } from "../../firebase/config";
 import {
   Dimensions,
   Image,
@@ -18,15 +20,20 @@ import {
 } from "react-native";
 
 import SvgArrow from "../../assets/svg/SvgArrow";
+import { FlatList } from "react-native";
+import { useSelector } from "react-redux";
+import { selectUser } from "../../redux/selectors";
+import { CommentItem } from "../../components/CommentItem";
 
 export const CommentsScreen = () => {
   const [photo, setPhoto] = useState("");
   const [comment, setComment] = useState("");
-  const [comments, setComments] = useState([]);
+  const [commentsList, setCommentsList] = useState([]);
 
   const route = useRoute();
   const navigation = useNavigation();
   const isFocused = useIsFocused();
+  const user = useSelector(selectUser);
 
   useEffect(() => {
     if (isFocused) {
@@ -44,22 +51,55 @@ export const CommentsScreen = () => {
     }
   }, [isFocused]);
 
-  const onAddComment = () => {
+  useEffect(() => {
+    (async () => {
+      const addComment = doc(db, "posts", route.params.id);
+      onSnapshot(collection(addComment, "comments"), (doc) => {
+        const comments = doc.docs
+          .map((comment) => ({
+            ...comment.data(),
+            id: comment.id,
+          }))
+          .sort((a, b) => a.date - b.date);
+
+        setCommentsList(comments);
+      });
+    })();
+  }, []);
+
+  const onAddComment = async () => {
     if (!comment.trim()) {
       return console.warn("Будь ласка, напишіть коментар");
+    } else {
+      const data = {
+        comment,
+        userAvatar: user.avatar,
+        date: Date.now(),
+        userId: user.id,
+      };
+      const docRef = doc(db, "posts", route.params.id);
+      await addDoc(collection(docRef, "comments"), data);
+      setComment("");
     }
-    setComments((prev) => [...prev, comment]);
-    setComment("");
   };
 
   return (
     <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
       <View style={styles.commentsContainer}>
         {photo && <Image source={{ uri: photo }} style={styles.image} />}
-
-        {comments.map((i, index) => (
-          <Text key={index}>{i}</Text>
-        ))}
+        <FlatList
+          data={commentsList}
+          keyExtractor={(item) => item.id}
+          renderItem={({ item }) => (
+            <CommentItem
+              id={item.id}
+              comment={item.comment}
+              date={item.date}
+              userAvatar={item.userAvatar}
+              userId={item.userId}
+            />
+          )}
+        />
         <KeyboardAvoidingView
           behavior={Platform.OS == "ios" ? "padding" : "height"}
         >
@@ -86,7 +126,7 @@ const styles = StyleSheet.create({
     flex: 1,
     height: screenSize.height,
     paddingHorizontal: 16,
-    justifyContent: "space-between",
+    marginTop: 32,
     backgroundColor: "#fff",
   },
   image: {

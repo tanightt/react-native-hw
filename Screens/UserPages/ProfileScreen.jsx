@@ -1,5 +1,4 @@
 import { useState, useEffect } from "react";
-import { useNavigation } from "@react-navigation/native";
 import { useDispatch, useSelector } from "react-redux";
 import {
   ImageBackground,
@@ -30,7 +29,6 @@ export const ProfileScreen = () => {
   const [posts, setPosts] = useState([]);
   const user = useSelector(selectUser);
   const dispatch = useDispatch();
-  const navigation = useNavigation();
 
   useEffect(() => {
     (async () => {
@@ -92,7 +90,7 @@ export const ProfileScreen = () => {
           <Text style={styles.userName}>{user.name}</Text>
           <FlatList
             data={posts}
-            keyExtractor={(item, idx) => idx.toString()}
+            keyExtractor={(item) => item.id}
             renderItem={({ item }) => (
               <PostItem
                 name={item.name}

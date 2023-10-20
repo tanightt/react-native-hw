@@ -5,7 +5,7 @@ import { useNavigation } from "@react-navigation/native";
 import SvgComment from "../assets/svg/SvgComment";
 import SvgLocation from "../assets/svg/SvgLocation";
 
-export const PostItem = ({ photo, name, address, location }) => {
+export const PostItem = ({ id, photo, name, address, location }) => {
   const navigation = useNavigation();
 
   return (
@@ -15,7 +15,7 @@ export const PostItem = ({ photo, name, address, location }) => {
       <View style={styles.itemNavContainer}>
         <TouchableOpacity
           style={{ flexDirection: "row", gap: 8 }}
-          onPress={() => navigation.navigate("Comments", { photo })}
+          onPress={() => navigation.navigate("Comments", { id, photo })}
         >
           <SvgComment />
           <Text>0</Text>

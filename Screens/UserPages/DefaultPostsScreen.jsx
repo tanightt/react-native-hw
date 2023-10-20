@@ -27,6 +27,7 @@ export const DefaultPostsScreen = () => {
         keyExtractor={(item) => item.id}
         renderItem={({ item }) => (
           <PostItem
+            id={item.id}
             name={item.name}
             photo={item.photoUrl}
             address={item.address}
