@@ -38,6 +38,7 @@ const styles = StyleSheet.create({
     height: screenSize.height,
     paddingHorizontal: 16,
     paddingTop: 32,
+    paddingBottom: 60,
     backgroundColor: "#fff",
   },
 });

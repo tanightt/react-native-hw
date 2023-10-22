@@ -50,7 +50,7 @@ export const ProfileScreen = () => {
       dispatch(updateAvatar({ photo }));
 
       const currentUser = auth.currentUser;
-      console.log("currentUser", currentUser);
+
       await updateProfile(currentUser, {
         photoURL: photo,
       });
@@ -112,7 +112,11 @@ const styles = StyleSheet.create({
     borderTopRightRadius: 25,
     backgroundColor: "#FFFFFF",
   },
-  avatarWrapper: { position: "absolute", top: -50, left: 200 },
+  avatarWrapper: {
+    position: "absolute",
+    top: -50,
+    alignSelf: "center",
+  },
   userAvatar: {
     width: 120,
     height: 120,

@@ -191,7 +191,7 @@ const styles = StyleSheet.create({
   photoView: {
     position: "absolute",
     top: 120,
-    left: 240,
+    left: 180,
     backgroundColor: "transparent",
     justifyContent: "flex-end",
   },
@@ -253,7 +253,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 23,
     paddingVertical: 16,
     marginTop: 32,
-    marginLeft: 220,
+    marginHorizontal: 170,
     borderRadius: 100,
     alignItems: "center",
     justifyContent: "center",

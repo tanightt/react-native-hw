@@ -76,8 +76,17 @@ export const PostsScreen = () => {
 };
 
 const styles = StyleSheet.create({
-  iconArrow: { marginLeft: 16, width: 24, height: 24 },
-  iconLogout: { marginRight: 10, width: 24, height: 24 },
+  iconArrow: {
+    padding: 16,
+    marginLeft: 16,
+    width: 24,
+    height: 24,
+  },
+  iconLogout: {
+    marginRight: 10,
+    width: 24,
+    height: 24,
+  },
 });
 
 const screenOptions = {

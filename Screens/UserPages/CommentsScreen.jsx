@@ -111,7 +111,7 @@ const styles = StyleSheet.create({
     flex: 1,
     height: screenSize.height,
     paddingHorizontal: 16,
-    marginTop: 32,
+    paddingTop: 32,
     backgroundColor: "#fff",
   },
   image: {
